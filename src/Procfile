@@ -1,0 +1,2 @@
+rails: bundle exec rails server -b 0.0.0.0
+webpack-dev-server: yarn run webpack-dev-server --color --mode development

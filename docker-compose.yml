@@ -1,5 +1,36 @@
 version: '3'
 services:
+  # Elasticsearch
+  es:
+    build:
+      context: ./
+      dockerfile: ./dockerfile/es/Dockerfile
+    container_name: es_sample
+    environment:
+      - cluster.name=rails-sample-cluster
+      - bootstrap.memory_lock=true
+      - "ES_JAVA_OPTS=-Xms512m -Xmx512m"
+    ulimits:
+      memlock:
+        soft: -1
+        hard: -1
+    ports:
+      - "9200:9200"
+    # データ永続化する場合はes_dataディレクトリを作って保存
+    # volumes:
+    #   - es_data:/usr/share/elasticsearch/data
+
+  # kibana
+  kibana:
+    image: docker.elastic.co/kibana/kibana:6.5.4
+    environment:
+      SERVER_NAME: localhost:5601
+      ELASTICSEARCH_URL: http://es_sample:9200
+    ports:
+      - "5601:5601"
+    depends_on:
+      - es
+
   # MySQL
   db:
     image: mysql:5.7
@@ -25,5 +56,6 @@ services:
       - "3035:3035"
     links:
       - db
+      - es
     tty: true
     stdin_open: true

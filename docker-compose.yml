@@ -1,6 +1,5 @@
 version: '3'
 services:
-  # MySQL
   db:
     image: mysql:5.7
     command: mysqld --character-set-server=utf8 --collation-server=utf8_unicode_ci
@@ -12,18 +11,12 @@ services:
     # データ永続化する場合はmysql_dataディレクトリを作って保存
     # volumes:
     #   - ./mysql_data:/var/lib/mysql
-
-  # Rails
-  web:
-    build:
-      context: ./
-      dockerfile: ./dockerfile/rails/Dockerfile
+  app:
+    build: .
     volumes:
       - ./src:/myapp
     ports:
       - "5000:3000"
       - "3035:3035"
-    links:
-      - db
     tty: true
     stdin_open: true
